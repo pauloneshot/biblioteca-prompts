@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - PaulOneShot Prompts</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --surface-color: #1e1e1e;
+            --surface-hover: #2a2a2a;
+            --accent-color: #ffe600;
+            --text-color: #ffffff;
+            --text-muted: #aaaaaa;
+            --border-color: #333333;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Pantalla de Login */
+        #login-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: var(--bg-color);
+            z-index: 1000;
+        }
+
+        .login-box {
+            background-color: var(--surface-color);
+            padding: 40px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 380px;
+            box-sizing: border-box;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .login-box img {
+            width: 180px;
+            margin-bottom: 25px;
+        }
+
+        .login-box h2 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+        }
+
+        /* Panel de Administración (Oculto inicialmente) */
+        #admin-panel {
+            display: none;
+            width: 100%;
+            max-width: 700px;
+            padding: 40px 20px;
+            box-sizing: border-box;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        header img {
+            width: 160px;
+        }
+
+        .btn-logout {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        /* Formularios y Campos */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        input[type="text"],
+        input[type="password"],
+        textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-color);
+            font-size: 1rem;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--accent-color);
+        }
+
+        textarea {
+            resize: vertical;
+            height: 120px;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: #000000;
+            border: none;
+            padding: 14px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        /* Área de resultado JSON */
+        .output-section {
+            margin-top: 40px;
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .output-section h3 {
+            margin-top: 0;
+            font-size: 1.1rem;
+        }
+
+        pre {
+            background-color: var(--bg-color);
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            color: #a6e22e;
+            font-size: 0.85rem;
+            max-height: 200px;
+        }
+
+        .instructions {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .error-msg {
+            color: #ff5555;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Pantalla de Inicio de Sesión -->
+    <div id="login-screen">
+        <div class="login-box">
+            <img src="pauloneshot-solo-nombre.png" alt="PaulOneShot Logo">
+            <h2>Panel de Administración</h2>
+            <div class="form-group">
+                <input type="password" id="admin-password" placeholder="Contraseña de acceso" onkeydown="if(event.key === 'Enter') checkPassword()">
+            </div>
+            <button class="btn-primary" onclick="checkPassword()">Ingresar</button>
+            <div id="login-error" class="error-msg">Contraseña incorrecta</div>
+        </div>
+    </div>
+
+    <!-- Panel de Administración Principal -->
+    <div id="admin-panel">
+        <header>
+            <img src="pauloneshot-solo-nombre.png" alt="PaulOneShot Logo">
+            <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+        </header>
+
+        <div class="instructions">
+            <strong>¿Cómo funciona?</strong> Ingresa la URL de la imagen y el texto del prompt. Al hacer clic en "Generar Código", el sistema creará automáticamente el bloque listo para tu biblioteca pública.
+        </div>
+
+        <div class="form-group">
+            <label for="img-url">URL de la Imagen (Ej: Enlace de Imgur o GitHub)</label>
+            <input type="text" id="img-url" placeholder="https://images.unsplash.com/...">
+        </div>
+
+        <div class="form-group">
+            <label for="prompt-text">Texto del Prompt</label>
+            <textarea id="prompt-text" placeholder="Escribe aquí tu prompt detallado..."></textarea>
+        </div>
+
+        <button class="btn-primary" onclick="generateSnippet()">Generar y Copiar Código para la Web</button>
+
+        <div class="output-section">
+            <h3>Fragmento de código generado:</h3>
+            <p class="instructions" style="margin-bottom:10px; font-size:0.85rem;">Pega este código dentro de la etiqueta <code>&lt;main class="gallery"&gt;</code> en tu archivo <code>index.html</code>:</p>
+            <pre id="code-output"><!-- Aquí aparecerá el código generado --></pre>
+            <button class="btn-primary" style="background-color: #333; color: #fff; margin-top: 10px;" onclick="copyCodeOutput()">Copiar este fragmento</button>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURA TU CONTRASEÑA AQUÍ (cámbiala por la que prefieras)
+        const ADMIN_PASS = "paul2026"; 
+
+        function checkPassword() {
+            const pass = document.getElementById("admin-password").value;
+            if (pass === ADMIN_PASS) {
+                document.getElementById("login-screen").style.display = "none";
+                document.getElementById("admin-panel").style.display = "block";
+                sessionStorage.setItem("auth", "true");
+            } else {
+                document.getElementById("login-error").style.display = "block";
+            }
+        }
+
+        // Mantener sesión abierta si ya ingresó en la misma pestaña
+        window.onload = function() {
+            if (sessionStorage.getItem("auth") === "true") {
+                document.getElementById("login-screen").style.display = "none";
+                document.getElementById("admin-panel").style.display = "block";
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem("auth");
+            location.reload();
+        }
+
+        function generateSnippet() {
+            const url = document.getElementById("img-url").value.trim();
+            const text = document.getElementById("prompt-text").value.trim().replace(/'/g, "\'");
+
+            if (!url || !text) {
+                alert("Por favor completa ambos campos.");
+                return;
+            }
+
+            const snippet = `<div class="card" onclick="copyPrompt('${text}')">
+    <img src="${url}" alt="Prompt Image">
+    <div class="overlay">
+        <span class="overlay-icon">📋</span>
+        <span class="overlay-text">Copiar Prompt</span>
+    </div>
+</div>`;
+
+            document.getElementById("code-output").textContent = snippet;
+        }
+
+        function copyCodeOutput() {
+            const code = document.getElementById("code-output").textContent;
+            if (!code.startsWith("<div")) {
+                alert("Primero genera un código válido.");
+                return;
+            }
+            navigator.clipboard.writeText(code).then(() => {
+                alert("¡Fragmento copiado al portapapeles!");
+            });
+        }
+    </script>
+</body>
+</html>
