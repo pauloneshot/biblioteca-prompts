@@ -5,213 +5,113 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PaulOneShot - Biblioteca de Prompts</title>
     <style>
-        /* Estilos base y variables */
         :root {
             --bg-color: #121212;
             --surface-color: #1e1e1e;
-            --accent-color: #ffe600; /* Amarillo del logo */
+            --accent-color: #ffe600;
             --text-color: #ffffff;
             --text-muted: #aaaaaa;
         }
-
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            font-family: 'Inter', -apple-system, sans-serif;
+            margin: 0; padding: 0;
+            display: flex; flex-direction: column; align-items: center;
             min-height: 100vh;
         }
-
-        /* Cabecera minimalista */
-        header {
-            padding: 60px 20px 40px;
-            text-align: center;
-            width: 100%;
-            max-width: 800px;
-        }
-
-        header img {
-            max-width: 250px;
-            height: auto;
-            margin-bottom: 15px;
-        }
-
-        header p {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-            margin: 0;
-        }
-
-        /* Cuadrícula de la galería */
+        header { padding: 60px 20px 40px; text-align: center; width: 100%; max-width: 800px; }
+        header img { max-width: 250px; height: auto; margin-bottom: 15px; }
+        header p { color: var(--text-muted); font-size: 1.1rem; margin: 0; }
         .gallery {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 24px;
-            padding: 20px;
-            width: 100%;
-            max-width: 1200px;
-            box-sizing: border-box;
-            margin-bottom: 60px;
+            gap: 24px; padding: 20px; width: 100%; max-width: 1200px;
+            box-sizing: border-box; margin-bottom: 60px;
         }
-
-        /* Tarjetas de imágenes */
         .card {
-            position: relative;
-            border-radius: 16px;
-            overflow: hidden;
-            cursor: pointer;
-            background-color: var(--surface-color);
-            aspect-ratio: 1 / 1; /* Imágenes cuadradas */
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative; border-radius: 16px; overflow: hidden;
+            cursor: pointer; background-color: var(--surface-color);
+            aspect-ratio: 1 / 1; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
         }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-        }
-
-        .card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            transition: transform 0.5s ease;
-        }
-
-        .card:hover img {
-            transform: scale(1.05);
-        }
-
-        /* Capa superpuesta al hacer hover */
+        .card:hover { transform: translateY(-5px); }
+        .card img { width: 100%; height: 100%; object-fit: cover; display: block; }
         .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            padding: 20px;
-            text-align: center;
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.7); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; opacity: 0;
+            transition: opacity 0.3s ease; padding: 20px; text-align: center;
         }
-
-        .card:hover .overlay {
-            opacity: 1;
-        }
-
-        .overlay-icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
-        .overlay-text {
-            color: var(--accent-color);
-            font-weight: 600;
-            font-size: 1.2rem;
-            letter-spacing: 0.5px;
-        }
-
-        /* Notificación emergente (Toast) */
+        .card:hover .overlay { opacity: 1; }
+        .overlay-icon { font-size: 2rem; margin-bottom: 10px; }
+        .overlay-text { color: var(--accent-color); font-weight: 600; font-size: 1.2rem; }
         #toast {
-            visibility: hidden;
-            min-width: 250px;
-            background-color: var(--accent-color);
-            color: #000000;
-            text-align: center;
-            border-radius: 30px;
-            padding: 12px 24px;
-            position: fixed;
-            z-index: 100;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-weight: 600;
-            font-size: 1rem;
-            box-shadow: 0px 10px 30px rgba(255, 230, 0, 0.2);
-            opacity: 0;
+            visibility: hidden; min-width: 250px; background-color: var(--accent-color);
+            color: #000; text-align: center; border-radius: 30px; padding: 12px 24px;
+            position: fixed; z-index: 100; bottom: 40px; left: 50%;
+            transform: translateX(-50%); font-weight: 600; opacity: 0;
             transition: opacity 0.3s, bottom 0.3s;
         }
-
-        #toast.show {
-            visibility: visible;
-            bottom: 50px;
-            opacity: 1;
-        }
+        #toast.show { visibility: visible; bottom: 50px; opacity: 1; }
     </style>
 </head>
 <body>
-
     <header>
-        <!-- Tu logo irá aquí -->
         <img src="pauloneshot-solo-nombre.png" alt="PaulOneShot Logo">
         <p>Haz clic en cualquier imagen para copiar su prompt al instante.</p>
     </header>
 
-    <main class="gallery">
-        <!-- Ejemplo 1 -->
-        <div class="card" onclick="copyPrompt('Fotografía macro de un ojo humano reflejando una galaxia brillante, iluminación de estudio, hiperrealista, 8k, lente de 100mm')">
-            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop" alt="Ejemplo Galaxia">
-            <div class="overlay">
-                <span class="overlay-icon">📋</span>
-                <span class="overlay-text">Copiar Prompt</span>
-            </div>
-        </div>
-
-        <!-- Ejemplo 2 -->
-        <div class="card" onclick="copyPrompt('Paisaje cyberpunk en Caracas, lluvia intensa, luces de neón amarillas reflejadas en el asfalto mojado, estilo cinemático, motor Unreal Engine 5')">
-            <img src="https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?q=80&w=800&auto=format&fit=crop" alt="Ejemplo Cyberpunk">
-            <div class="overlay">
-                <span class="overlay-icon">📋</span>
-                <span class="overlay-text">Copiar Prompt</span>
-            </div>
-        </div>
-        
-        <!-- Ejemplo 3 -->
-        <div class="card" onclick="copyPrompt('Estudio de grabación moderno flotando en el espacio exterior, luz suave y cálida contrastando con las estrellas, render 3D, octane render')">
-            <img src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=800&auto=format&fit=crop" alt="Ejemplo Estudio">
-            <div class="overlay">
-                <span class="overlay-icon">📋</span>
-                <span class="overlay-text">Copiar Prompt</span>
-            </div>
-        </div>
+    <main class="gallery" id="gallery-container">
+        <!-- Se cargará automáticamente -->
     </main>
 
-    <!-- Elemento para la notificación -->
     <div id="toast">¡Prompt copiado con éxito!</div>
 
     <script>
-        // Función principal para copiar el texto
+        async function loadPrompts() {
+            try {
+                const response = await fetch('prompts.json?v=' + new Date().getTime());
+                const prompts = await response.json();
+                const container = document.getElementById('gallery-container');
+                container.innerHTML = '';
+
+                prompts.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    // Escapar comillas para evitar errores de JS
+                    const safePrompt = item.prompt.replace(/'/g, "\\'");
+                    card.setAttribute('onclick', `copyPrompt('${safePrompt}')`);
+                    
+                    card.innerHTML = `
+                        <img src="${item.image}" alt="Prompt Image">
+                        <div class="overlay">
+                            <span class="overlay-icon">📋</span>
+                            <span class="overlay-text">Copiar Prompt</span>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error("Error al cargar los prompts:", error);
+            }
+        }
+
         function copyPrompt(text) {
             navigator.clipboard.writeText(text).then(() => {
                 showToast();
-            }).catch(err => {
-                console.error('Error al copiar el prompt: ', err);
-                alert('No se pudo copiar el texto. Intenta de nuevo.');
             });
         }
 
-        // Función para mostrar la notificación visual
         let toastTimeout;
         function showToast() {
             const toast = document.getElementById("toast");
             toast.classList.add("show");
-            
-            // Reiniciar el temporizador si se hace clic varias veces rápido
             clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => {
-                toast.classList.remove("show");
-            }, 2500);
+            toastTimeout = setTimeout(() => { toast.classList.remove("show"); }, 2500);
         }
+
+        loadPrompts();
     </script>
 </body>
 </html>
