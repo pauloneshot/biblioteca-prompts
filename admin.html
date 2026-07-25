@@ -73,7 +73,7 @@
         <!-- Selector de tamaño del logo -->
         <div class="settings-box">
             <div class="form-group" style="margin-bottom: 0;">
-                <label for="logo-size-select">Tamaño del Logo en el Panel:</label>
+                <label for="logo-size-select">Tamaño del Logo (En toda la web):</label>
                 <select id="logo-size-select" onchange="changeLogoSize(this.value)">
                     <option value="1">1 - Pequeño (100px)</option>
                     <option value="2">2 - Pequeño Medio (140px)</option>
@@ -101,9 +101,10 @@
     </div>
 
     <script>
-        const ADMIN_PASS = "paul2026"; // Tu contraseña web
+        // CONFIGURACIÓN DE ACCESO A GITHUB
+        const ADMIN_PASS = "paul2026"; 
         const GITHUB_USER = "pauloneshot"; // Tu usuario exacto de GitHub
-        const GITHUB_REPO = "biblioteca-prompts"; // Tu repositorio
+        const GITHUB_REPO = "biblioteca-prompts"; // El nombre de tu repositorio
 
         // Tamaños asignados para cada nivel (1 al 5)
         const sizeMap = {
