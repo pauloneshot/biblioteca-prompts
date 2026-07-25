@@ -23,18 +23,20 @@
             background-color: var(--surface-color); padding: 40px; border-radius: 16px;
             width: 100%; max-width: 380px; box-sizing: border-box; text-align: center; border: 1px solid var(--border-color);
         }
-        .login-box img { width: 180px; margin-bottom: 20px; }
+        .login-box img { width: 180px; margin-bottom: 20px; transition: width 0.3s ease; }
         #admin-panel { display: none; width: 100%; max-width: 600px; padding: 40px 20px; box-sizing: border-box; }
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
-        header img { width: 150px; }
+        header img { transition: width 0.3s ease; }
+        
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-muted); }
-        input[type="text"], input[type="password"], textarea {
+        input[type="text"], input[type="password"], textarea, select {
             width: 100%; padding: 12px 16px; background-color: var(--surface-color);
             border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-color); font-size: 1rem; box-sizing: border-box; outline: none;
         }
-        input:focus, textarea:focus { border-color: var(--accent-color); }
+        input:focus, textarea:focus, select:focus { border-color: var(--accent-color); }
         textarea { resize: vertical; height: 120px; }
+        
         .btn-primary {
             background-color: var(--accent-color); color: #000; border: none;
             padding: 14px 24px; font-size: 1rem; font-weight: 600; border-radius: 8px; cursor: pointer; width: 100%;
@@ -43,13 +45,18 @@
         .instructions { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; }
         .error-msg { color: #ff5555; font-size: 0.85rem; margin-top: 10px; display: none; }
         .status-msg { margin-top: 15px; font-weight: 500; font-size: 0.95rem; text-align: center; }
+        
+        .settings-box {
+            background: var(--surface-color); padding: 15px 20px; border-radius: 10px;
+            border: 1px solid var(--border-color); margin-bottom: 25px;
+        }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
         <div class="login-box">
-            <img src="pauloneshot-solo-nombre.png" alt="Logo">
+            <img id="login-logo" src="pauloneshot-solo-nombre.png" alt="Logo">
             <div class="form-group"><input type="password" id="admin-password" placeholder="Contraseña de acceso" onkeydown="if(event.key === 'Enter') checkPassword()"></div>
             <div class="form-group"><input type="password" id="github-token" placeholder="GitHub Token (PAT)" onkeydown="if(event.key === 'Enter') checkPassword()"></div>
             <button class="btn-primary" onclick="checkPassword()">Ingresar</button>
@@ -59,9 +66,23 @@
 
     <div id="admin-panel">
         <header>
-            <img src="pauloneshot-solo-nombre.png" alt="Logo">
+            <img id="header-logo" src="pauloneshot-solo-nombre.png" alt="Logo">
             <button class="btn-primary" style="width: auto; padding: 8px 16px; background: transparent; border: 1px solid var(--border-color); color: var(--text-muted);" onclick="logout()">Salir</button>
         </header>
+
+        <!-- Selector de tamaño del logo -->
+        <div class="settings-box">
+            <div class="form-group" style="margin-bottom: 0;">
+                <label for="logo-size-select">Tamaño del Logo en el Panel:</label>
+                <select id="logo-size-select" onchange="changeLogoSize(this.value)">
+                    <option value="1">1 - Pequeño (100px)</option>
+                    <option value="2">2 - Pequeño Medio (140px)</option>
+                    <option value="3" selected>3 - Medio (180px)</option>
+                    <option value="4">4 - Medio Grande (230px)</option>
+                    <option value="5">5 - Grande (300px)</option>
+                </select>
+            </div>
+        </div>
 
         <div class="instructions">Sube tus nuevos prompts directamente. Al hacer clic en publicar, se actualizarán en tu web automáticamente en segundos.</div>
 
@@ -81,8 +102,30 @@
 
     <script>
         const ADMIN_PASS = "paul2026"; // Tu contraseña web
-        const GITHUB_USER = "pauloneshot"; // CAMBIA ESTO por tu usuario exacto de GitHub
-        const GITHUB_REPO = "biblioteca-prompts"; // CAMBIA ESTO por el nombre exacto de tu repositorio
+        const GITHUB_USER = "pauloneshot"; // Tu usuario exacto de GitHub
+        const GITHUB_REPO = "biblioteca-prompts"; // Tu repositorio
+
+        // Tamaños asignados para cada nivel (1 al 5)
+        const sizeMap = {
+            "1": "100px",
+            "2": "140px",
+            "3": "180px",
+            "4": "230px",
+            "5": "300px"
+        };
+
+        function changeLogoSize(level) {
+            const widthValue = sizeMap[level] || "180px";
+            document.getElementById("header-logo").style.width = widthValue;
+            document.getElementById("login-logo").style.width = widthValue;
+            localStorage.setItem("logo_size_level", level);
+        }
+
+        function loadLogoSize() {
+            const savedLevel = localStorage.getItem("logo_size_level") || "3";
+            document.getElementById("logo-size-select").value = savedLevel;
+            changeLogoSize(savedLevel);
+        }
 
         function checkPassword() {
             const pass = document.getElementById("admin-password").value;
@@ -99,9 +142,11 @@
         function showPanel() {
             document.getElementById("login-screen").style.display = "none";
             document.getElementById("admin-panel").style.display = "block";
+            loadLogoSize();
         }
 
         window.onload = function() {
+            loadLogoSize();
             if (sessionStorage.getItem("auth") === "true") {
                 showPanel();
             }
@@ -131,7 +176,6 @@
             const apiPath = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/prompts.json`;
 
             try {
-                // 1. Obtener el archivo actual y su SHA
                 const getRes = await fetch(apiPath, {
                     headers: { "Authorization": `token ${token}` }
                 });
@@ -140,20 +184,15 @@
                 
                 const fileData = await getRes.json();
                 const sha = fileData.sha;
-                
-                // Decodificar contenido actual en base64
                 const currentContent = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
 
-                // Agregar el nuevo prompt al inicio de la lista
                 currentContent.unshift({
                     image: imgUrl,
                     prompt: promptText
                 });
 
-                // Codificar de nuevo a base64
                 const newContentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(currentContent, null, 2))));
 
-                // 2. Enviar actualización a GitHub
                 const putRes = await fetch(apiPath, {
                     method: "PUT",
                     headers: {
@@ -172,7 +211,6 @@
                 statusEl.style.color = "#a6e22e";
                 statusEl.textContent = "¡Publicado con éxito! Tu web se actualizará en unos segundos.";
                 
-                // Limpiar campos
                 document.getElementById("img-url").value = "";
                 document.getElementById("prompt-text").value = "";
                 
