@@ -22,15 +22,24 @@
         }
         header { padding: 60px 20px 40px; text-align: center; width: 100%; max-width: 800px; }
         
-        /* Logo fijado a un tamaño gigante (720px) */
+        /* Logo fijado a un tamaño gigante (720px) con márgenes negativos para recortar el espacio transparente */
         header img { 
             width: 720px; 
-            max-width: 100%; /* Para que no se salga en celulares */
+            max-width: 100%; 
             height: auto; 
-            margin-bottom: 15px; 
+            margin-top: -50px;    /* Elimina el espacio sobrante por arriba del logo */
+            margin-bottom: -100px; /* Elimina el espacio sobrante entre el logo y el texto */
+            position: relative;
+            z-index: 1;
         }
         
-        header p { color: var(--text-muted); font-size: 1.1rem; margin: 0; }
+        header p { 
+            color: var(--text-muted); 
+            font-size: 1.1rem; 
+            margin: 0; 
+            position: relative;
+            z-index: 10; /* Asegura que el texto no quede bloqueado por la zona transparente de la imagen */
+        }
         
         .gallery {
             display: grid;
