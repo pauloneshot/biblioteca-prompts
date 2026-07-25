@@ -22,12 +22,12 @@
         }
         header { padding: 60px 20px 40px; text-align: center; width: 100%; max-width: 800px; }
         
-        /* El tamaño del logo se ajustará dinámicamente desde el script */
+        /* Logo fijado a un tamaño gigante (720px) */
         header img { 
-            width: 180px; 
+            width: 720px; 
+            max-width: 100%; /* Para que no se salga en celulares */
             height: auto; 
             margin-bottom: 15px; 
-            transition: width 0.3s ease;
         }
         
         header p { color: var(--text-muted); font-size: 1.1rem; margin: 0; }
@@ -86,24 +86,6 @@
     <div id="toast">¡Prompt copiado con éxito!</div>
 
     <script>
-        // Tamaños sincronizados con el panel de administración
-        const sizeMap = {
-            "1": "100px",
-            "2": "140px",
-            "3": "180px",
-            "4": "230px",
-            "5": "300px"
-        };
-
-        // Aplicar el tamaño guardado (o por defecto 180px si no se ha configurado)
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedLevel = localStorage.getItem("logo_size_level") || "3";
-            const logoEl = document.getElementById("main-logo");
-            if(logoEl) {
-                logoEl.style.width = sizeMap[savedLevel] || "180px";
-            }
-        });
-
         async function loadPrompts() {
             try {
                 const response = await fetch('prompts.json?v=' + new Date().getTime());
