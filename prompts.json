@@ -1,6 +1,10 @@
 [
-    {
-        "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop",
-        "prompt": "Fotografía macro de un ojo humano reflejando una galaxia brillante, iluminación de estudio, hiperrealista, 8k, lente de 100mm"
-    }
+  {
+    "image": "https://github.com/pauloneshot/biblioteca-prompts/blob/main/fotos/Gemini_Generated_Image_421lsa421lsa421l%20(1).png",
+    "prompt": "Prompt para imagen de referencia:\n\nUna fotografía fotorrealista de primer plano de un hombre de mediana edad con cabello muy corto y canoso y una perilla gris, con una expresión seria y directa a la cámara, idéntico al sujeto en image_11.png. La iluminación es natural y uniforme, capturando los detalles de la piel y la textura del cabello. El fondo es una pared blanca limpia.\n\nInstrucciones para el futuro:\n\nAhora que tengo tus tres ángulos de referencia (frontal, perfil derecho y perfil izquierdo), simplemente dime qué tipo de foto quieres. Puedes especificar:\n\nSituación: (ej. trabajando en una oficina, montando en bicicleta, cenando en un restaurante).\n\nEstilo: (ej. retrato de estudio, foto de acción, estilo cinematográfico, blanco y negro).\n\nLugar/Fondo: (ej. una playa tropical, una ciudad de noche, un bosque).\n\nEmoción/Expresión: (ej. sonriendo, pensativo, serio)."
+  },
+  {
+    "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop",
+    "prompt": "Fotografía macro de un ojo humano reflejando una galaxia brillante, iluminación de estudio, hiperrealista, 8k, lente de 100mm"
+  }
 ]
